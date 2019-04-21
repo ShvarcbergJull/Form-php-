@@ -8,14 +8,14 @@
 <h2 align="center">Файлы: </h2>
 <?php 
 	//include "del.php";
-	$filelist = glob("*.txt"); 
+	$filelist = glob("formfile/*.txt"); 
 	$i=0; 
 ?> 
 <form action="del.php" method="POST"> 
 <?php 
 	foreach ($filelist as $filename){ 
 		$i++; 
-		echo "<input type='checkbox' name='f[]' value=".$filename.">".$filename."<br>"; 
+		echo "<input type='checkbox' name='f[]' value=".substr($filename, 9).">".substr($filename, 9)."<br>"; 
 	} 
 ?> 
 <p><input type="submit" value="Удалить данные"></p> 
