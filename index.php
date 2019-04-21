@@ -1,21 +1,50 @@
 <?php
-	$error = array(
-		'name' => '',
-		'last_name' => '',
-		'email' => '',
-		'phone' => '',
-		'c' => '',
-	);
+error_reporting(0);
+//$_SERVER(__DIR__);
+$error = array(
+);
 
-	if (!empty($_POST))
+if (!empty($_POST))
+{
+	$name = isset($_POST['name']) ? trim($_POST['name']) : null;
+	$lastname = isset($_POST['last_name']) ? trim($_POST['last_name']) : null;
+	$email = isset($_POST['email']) ? trim($_POST['email']) : null;
+	$phone = isset($_POST['phone']) ? trim($_POST['phone']) : null;
+	$topic = isset($_POST['topic']) ? trim($_POST['topic']) : null;
+	$pay = isset($_POST['pay']) ? trim($_POST['pay']) : null;
+
+	foreach (['name', 'lastname', 'email', 'phone', 'topic', 'pay'] as $key) 
 	{
-		$error['name'] = empty($_POST['name']) ? 'Введите имя!' : '';
-		$error['last_name'] = empty($_POST['last_name']) ? 'Введите фамилию!' : '';
-		$error['email'] = empty($_POST['email']) ? 'Введите эл.почту!' : '';
-		$error['phone'] = empty($_POST['phone']) ? 'Введите номер телефона!' : '';
-		$error['c'] = (!empty($_POST['name']) && !empty($_POST['last_name']) && !empty($_POST['email']) && !empty($_POST['phone'])) ? 'true' : ''; 
+		if(empty($$key))
+		{
+			$error[$key] = true;
+		}
 	}
+
+	if ($error)
+	{
+		$contents = '<?php' . "\n"   
+		    . 'return'
+		    . var_export([
+		        'name' => $name,
+		        'lastname' => $lastname,
+		        'email' => $email,
+		        'topic' => $topic, 
+		        'pay' => $pay, 
+		    ], true);
+
+		$filename = date('Y-m-d-H-i-s') . '-' . rand(010, 99) . '.txt';
+
+		//mkdir($filename, 0777, true);
+
+		file_put_contents("formfile\\".$filename, $contents);
+
+		header('Location: form.php');
+		exit;
+	}
+}
 ?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -56,37 +85,6 @@
 		<p>Хотите получать рассылку?<input type="checkbox" name="jel"></p>
 	<p><input type="submit" value="Отправить"></p>
 	</form>
-
-	<?php
-	if ($error['c'] == 'true')
-	{
-		$name = $_POST['name'];
-		$lastname = $_POST['last_name'];
-		$email = $_POST['email'];
-		$phone = $_POST['phone'];
-		$topic = $_POST['Topic'];
-		$pay = $_POST['pay'];
-	
-		$contents = '<?php' . "\n"   
-		    . 'return'
-		    . var_export([
-		        'name' => $name,
-		        'lastname' => $lastname,
-		        'email' => $email,
-		        'topic' => $topic, 
-		        'pay' => $pay, 
-		    ], true);
-	
-		$filename = date('Y-m-d-H-i-s') . '-' . rand(010, 99) . '.txt';
-	
-		//mkdir($filename, 0777, true);
-	
-		file_put_contents($filename, $contents);
-
-		header('Location: form.php');
-		exit;
-	}
-	?>
 
 	<form action="admin.php">
 		<p><input type="submit" value="Админ"></p>
